@@ -1,0 +1,165 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+.virtualenv
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# MLflow
+mlruns/
+mlartifacts/
+mlflow_logs/
+# Keep mlflow_logs structure but ignore contents
+!mlflow_logs/.gitkeep
+
+
+# Data (Don't commit large datasets)
+data/raw/*.csv
+data/processed/*.npy
+data/processed/*.csv
+data/processed/*.pkl
+# Keep data structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+# Allow small metadata files
+!data/eda_summary.json
+!data/processed/metadata.json
+
+# Logs
+logs/
+*.log
+monitoring_logs/
+retraining_logs/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.cover
+.hypothesis/
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+*.bak
+
+# Deployment
+*.zip
+*.tar.gz
+
+# Secrets and Credentials
+secrets/
+credentials/
+*.pem
+*.key
+*.crt
+*.pfx
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Package manager
+package-lock.json
+yarn.lock
+Pipfile.lock
+
+# Node (if using any JS tools)
+node_modules/
+
+# Build outputs
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Documentation builds
+docs/_build/
+site/
+
+# Backup files
+*~
+*.backup
+*.bak
+
+# System files
+.fuse_hidden*
+.directory
+.Trash-*
+
+# Windows
+$RECYCLE.BIN/
+ehthumbs.db
+Thumbs.db
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*

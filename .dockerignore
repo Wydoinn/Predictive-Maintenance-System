@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Tests
+tests/
+test_*.py
+*_test.py
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Logs (will be mounted as volumes)
+logs/
+*.log
+
+# Data (will be mounted as volumes)
+# Keep data structure but exclude large files
+data/*.csv
+data/**/*.csv
+data/**/*.pkl
+data/**/*.npy
+
+# Models (will be mounted as volumes)
+# models/*.pkl
+# models/*.pt
+
+# MLflow (will be mounted as volumes)
+# mlflow_logs/
+
+# Monitoring logs (will be mounted as volumes)
+monitoring_logs/
+retraining_logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
