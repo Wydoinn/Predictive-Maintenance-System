@@ -67,10 +67,24 @@ docker-compose up -d
 ### 💻 Local Setup
 
 ```bash
+git clone https://github.com/Wydoinn/Predictive-Maintenance-System.git
+cd Predictive-Maintenance-System
 python -m venv venv
 source venv/bin/activate      # or venv\Scripts\activate (Windows)
 pip install -r requirements.txt
-python run.py --all
+```
+
+#### 🔧 Usage
+
+```bash
+python run.py --all                   # Run complete pipeline
+python run.py --step preprocess       # Run preprocessing only
+python run.py --step train            # Run training only
+python run.py --step evaluate         # Run evaluation only
+python run.py --step api              # Start API server
+python run.py --step dashboard        # Start dashboard
+python run.py --step monitor          # Run monitoring
+python run.py --step retrain          # Run retraining
 ```
 
 
