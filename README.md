@@ -126,10 +126,10 @@ print(requests.post(url, json=data).json())
 
 ## 🧠 Tech Stack
 
-**ML & AI** – scikit-learn | LightGBM | XGBoost | PyTorch | SHAP
-**MLOps** – MLflow | Optuna | Pydantic
-**Web** – FastAPI | Streamlit | Uvicorn
-**DevOps** – Docker | docker-compose
+- **ML & AI** – scikit-learn | LightGBM | XGBoost | PyTorch | SHAP
+- **MLOps** – MLflow | Optuna | Pydantic
+- **Web** – FastAPI | Streamlit | Uvicorn
+- **DevOps** – Docker | docker-compose
 
 
 ## 🧾 Dataset
