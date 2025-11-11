@@ -13,7 +13,6 @@ Includes automated training, REST API, dashboard, monitoring, drift detection, a
 The **Predictive Maintenance System** forecasts machine failures before they happen — enabling proactive maintenance and reducing downtime.
 It follows modern **MLOps best practices** with modular pipelines, model tracking, and production-ready deployment.
 
----
 
 ## ✨ Features
 
