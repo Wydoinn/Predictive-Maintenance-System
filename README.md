@@ -1,7 +1,7 @@
 # 🔧 Predictive Maintenance System
 
 <div align="center">
-
+  
 **An end-to-end MLOps-driven machine learning system for predicting equipment failures using the AI4I 2020 Predictive Maintenance Dataset.**
 Includes automated training, REST API, dashboard, monitoring, drift detection, and retraining — fully containerized with Docker.
 
@@ -116,6 +116,12 @@ print(requests.post(url, json=data).json())
   "model_used": "lightgbm"
 }
 ```
+
+## 🎨 Dashboard Preview
+
+<img width="1897" height="913" alt="Screenshot 2025-11-11 171731" src="https://github.com/user-attachments/assets/cad10b41-e870-4033-adc9-21eae0620349" />
+
+<img width="1908" height="919" alt="Screenshot 2025-11-11 171836" src="https://github.com/user-attachments/assets/0b71ee6f-228b-4727-b427-a289a4fe1ede" />
 
 
 ## 🧠 Tech Stack
