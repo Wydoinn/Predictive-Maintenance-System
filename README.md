@@ -141,15 +141,6 @@ python src/retrain.py    # Auto-retrain models
 ```
 
 
-## 🧪 Development
-
-```bash
-pytest tests/            # Run tests
-black src/ app/          # Format code
-flake8 src/ app/         # Lint
-```
-
-
 ## 📝 License
 
 Licensed under the **MIT License** — free for personal & commercial use.
