@@ -1,12 +1,3 @@
-# ============================================================================
-# Docker Compose Configuration for Predictive Maintenance System
-# ============================================================================
-# This file orchestrates three services:
-# 1. FastAPI REST API (Port 8000)
-# 2. Streamlit Dashboard (Port 8501)
-# 3. MLflow Tracking Server (Port 5000)
-# ============================================================================
-
 services:
   # ========================================================================
   # FastAPI Backend Service
@@ -58,6 +49,10 @@ services:
   # Streamlit Dashboard Service
   # ========================================================================
   dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
     image: predictive_maintenance:latest
     container_name: predictive_maintenance_dashboard
     ports:
@@ -99,10 +94,14 @@ services:
   # MLflow Tracking Server (Optional)
   # ========================================================================
   mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
     image: predictive_maintenance:latest
     container_name: predictive_maintenance_mlflow
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       # Mount MLflow logs for experiment tracking
       - ./mlflow_logs:/app/mlflow_logs:rw
@@ -148,30 +147,9 @@ volumes:
     driver: local
 
 # ============================================================================
-# Usage Instructions:
-# ============================================================================
-#
-# 1. Build and start all services:
-#    docker-compose up -d
-#
-# 2. Start specific service:
-#    docker-compose up -d api
-#    docker-compose up -d dashboard
-#
-# 3. View logs:
-#    docker-compose logs -f api
-#    docker-compose logs -f dashboard
-#
-# 4. Stop all services:
-#    docker-compose down
-#
-# 5. Rebuild after code changes:
-#    docker-compose up -d --build
-#
-# 6. Access services:
+#  Access services:
 #    API: http://localhost:8000
 #    API Docs: http://localhost:8000/docs
 #    Dashboard: http://localhost:8501
-#    MLflow: http://localhost:5000
-#
+#    MLflow: http://localhost:5001
 # ============================================================================

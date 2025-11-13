@@ -1,7 +1,7 @@
 # 🔧 Predictive Maintenance System
 
 <div align="center">
-  
+
 **An end-to-end MLOps-driven machine learning system for predicting equipment failures using the AI4I 2020 Predictive Maintenance Dataset.**
 Includes automated training, REST API, dashboard, monitoring, drift detection, and retraining — fully containerized with Docker.
 
@@ -62,7 +62,7 @@ docker-compose up -d
 * API → [http://localhost:8000](http://localhost:8000)
 * Docs → [http://localhost:8000/docs](http://localhost:8000/docs)
 * Dashboard → [http://localhost:8501](http://localhost:8501)
-* MLflow → [http://localhost:5000](http://localhost:5000)
+* MLflow → [http://localhost:5001](http://localhost:5001)
 
 ### 💻 Local Setup
 

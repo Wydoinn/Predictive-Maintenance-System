@@ -56,16 +56,13 @@ docker-compose*.yml
 logs/
 *.log
 
-# Data (will be mounted as volumes)
-# Keep data structure but exclude large files
+# Data - Keep structure and processed files, exclude large raw CSV files
+# Processed files (scaler, encoder, metadata) are needed for inference
 data/*.csv
-data/**/*.csv
-data/**/*.pkl
-data/**/*.npy
+data/raw/
 
-# Models (will be mounted as volumes)
-# models/*.pkl
-# models/*.pt
+# Models - Keep models in the image as fallback, volumes will override
+# If models directory is empty, Docker healthcheck may fail
 
 # MLflow (will be mounted as volumes)
 # mlflow_logs/
