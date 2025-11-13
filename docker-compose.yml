@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
       target: final
     image: predictive_maintenance:latest
+    pull_policy: never
     container_name: predictive_maintenance_api
     ports:
       - "8000:8000"
@@ -49,11 +50,8 @@ services:
   # Streamlit Dashboard Service
   # ========================================================================
   dashboard:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final
     image: predictive_maintenance:latest
+    pull_policy: never
     container_name: predictive_maintenance_dashboard
     ports:
       - "8501:8501"
@@ -94,11 +92,8 @@ services:
   # MLflow Tracking Server (Optional)
   # ========================================================================
   mlflow:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final
     image: predictive_maintenance:latest
+    pull_policy: never
     container_name: predictive_maintenance_mlflow
     ports:
       - "5001:5000"

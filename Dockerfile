@@ -28,9 +28,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 
 # Install Python dependencies
-# For Docker: Install CPU-only PyTorch to reduce image size
+# For Docker: Install CPU-only PyTorch to reduce image size (use latest available CPU version)
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
+    pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch && \
     pip install --no-cache-dir -r requirements.txt
 
 # ============================================================================
