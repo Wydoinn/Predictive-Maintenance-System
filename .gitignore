@@ -41,11 +41,15 @@ mlflow_logs/
 !mlflow_logs/.gitkeep
 
 
-# Data (Don't commit large datasets)
-data/raw/*.csv
+# Data files
+# Include the dataset for easy setup
+!data/raw/ai4i2020.csv
+# Include preprocessing artifacts for immediate use
+!data/processed/scaler.pkl
+!data/processed/label_encoder.pkl
+# Exclude other large files
 data/processed/*.npy
 data/processed/*.csv
-data/processed/*.pkl
 # Keep data structure
 !data/raw/.gitkeep
 !data/processed/.gitkeep

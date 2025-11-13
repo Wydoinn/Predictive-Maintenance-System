@@ -1,10 +1,3 @@
-# ============================================================================
-# Dockerfile for Predictive Maintenance System
-# ============================================================================
-# Multi-stage build for smaller image size and better caching
-# Optimized for production deployment with FastAPI, Streamlit, and MLflow
-# ============================================================================
-
 FROM python:3.10-slim AS base
 
 # Set working directory
@@ -35,7 +28,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 
 # Install Python dependencies
+# For Docker: Install CPU-only PyTorch to reduce image size
 RUN pip install --upgrade pip && \
+    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu torch==2.5.1+cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # ============================================================================

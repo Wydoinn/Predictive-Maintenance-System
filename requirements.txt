@@ -1,11 +1,6 @@
-# ============================================================================
-# Predictive Maintenance System - Python Dependencies
-# ============================================================================
-
 # Core ML/DL Libraries
-# CPU-only PyTorch for smaller Docker image size
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.5.1+cpu
+# PyTorch - works on all systems (CPU/GPU auto-detected)
+torch==2.5.1
 scikit-learn==1.5.2
 pandas==2.2.3
 numpy==2.1.3
