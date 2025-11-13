@@ -119,9 +119,9 @@ print(requests.post(url, json=data).json())
 
 ## 🎨 Dashboard Preview
 
-<img width="1897" height="913" alt="Screenshot 2025-11-11 171731" src="https://github.com/user-attachments/assets/cad10b41-e870-4033-adc9-21eae0620349" />
+<img width="1465" height="831" alt="Screenshot 2025-11-13 at 10 58 13 AM" src="https://github.com/user-attachments/assets/8144b9ff-44dd-4195-8e5e-4f31fdfafe02" />
 
-<img width="1908" height="919" alt="Screenshot 2025-11-11 171836" src="https://github.com/user-attachments/assets/0b71ee6f-228b-4727-b427-a289a4fe1ede" />
+<img width="1460" height="828" alt="Screenshot 2025-11-13 at 10 58 35 AM" src="https://github.com/user-attachments/assets/d194309e-c6ca-441e-9e5e-a14ba6b9f92c" />
 
 
 ## 🧠 Tech Stack
