@@ -49,954 +49,165 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize session state for theme and predictions
-if 'theme' not in st.session_state:
-    st.session_state.theme = 'dark'
+# Initialize session state for predictions
 if 'prediction_result' not in st.session_state:
     st.session_state.prediction_result = None
 if 'last_input' not in st.session_state:
     st.session_state.last_input = None
 
-def toggle_theme():
-    """Toggle between light and dark theme."""
-    st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
-
 def get_theme_css():
-    """Get CSS based on current theme."""
-    if st.session_state.theme == 'dark':
-        return """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        /* Global Styles - DARK THEME */
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #e2e8f0 !important;
-        }
-
-        /* Force dark background */
-        .stApp {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-            color: #e2e8f0 !important;
-        }
-
-        .main {
-            padding: 1.5rem 2rem;
-            background: transparent !important;
-            color: #e2e8f0 !important;
-        }
-
-        .main * {
-            color: #e2e8f0 !important;
-        }
-
-        /* Override Streamlit's default */
-        [data-testid="stAppViewContainer"] {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-            color: #e2e8f0 !important;
-        }
-
-        [data-testid="stAppViewContainer"] * {
-            color: #e2e8f0 !important;
-        }
-
-        [data-testid="stHeader"] {
-            background: transparent !important;
-        }
-
-        /* Headers with gradient */
-        h1 {
-            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-            font-size: 2.5rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        h2 {
-            color: #f1f5f9 !important;
-            font-weight: 600;
-            font-size: 1.75rem !important;
-            margin-top: 2rem !important;
-        }
-
-        h3 {
-            color: #e2e8f0 !important;
-            font-weight: 600;
-            font-size: 1.25rem !important;
-        }
-
-        /* Metric Cards - Uniform height and spacing */
-        [data-testid="stMetric"] {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(100, 116, 139, 0.4);
-            border-radius: 16px;
-            padding: 1.5rem !important;
-            min-height: 120px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        [data-testid="stMetric"]:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-            border-color: rgba(96, 165, 250, 0.6);
-        }
-
-        [data-testid="stMetric"] label {
-            color: #94a3b8 !important;
-            font-size: 0.875rem !important;
-            font-weight: 600 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        [data-testid="stMetric"] [data-testid="stMetricValue"] {
-            color: #f1f5f9 !important;
-            font-size: 2rem !important;
-            font-weight: 700 !important;
-        }
-
-        /* Sidebar - Fixed width and consistent styling */
-        section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-            border-right: 1px solid rgba(100, 116, 139, 0.4);
-            color: #e2e8f0 !important;
-            min-width: 300px !important;
-            max-width: 350px !important;
-        }
-
-        section[data-testid="stSidebar"] * {
-            color: #e2e8f0 !important;
-        }
-
-        section[data-testid="stSidebar"] .stMarkdown {
-            color: #e2e8f0 !important;
-        }
-
-        section[data-testid="stSidebar"] .stMarkdown * {
-            color: #e2e8f0 !important;
-        }
-
-        section[data-testid="stSidebar"] label {
-            color: #e2e8f0 !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        section[data-testid="stSidebar"] input,
-        section[data-testid="stSidebar"] select,
-        section[data-testid="stSidebar"] textarea {
-            color: #e2e8f0 !important;
-            border-radius: 8px !important;
-        }
-
-        /* Sidebar selectbox specific */
-        section[data-testid="stSidebar"] [data-baseweb="select"] {
-            color: #e2e8f0 !important;
-            width: 100% !important;
-        }
-
-        section[data-testid="stSidebar"] [data-baseweb="select"] * {
-            color: #e2e8f0 !important;
-        }
-
-        /* Sidebar sliders - equal width */
-        section[data-testid="stSidebar"] .stSlider {
-            width: 100% !important;
-        }
-
-        /* Buttons - Full width in sidebar */
-        .stButton > button {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
-            color: white !important;
-            border: none;
-            border-radius: 12px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-            width: 100%;
-        }
-
-        .stButton > button * {
-            color: white !important;
-        }
-
-        .stButton > button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
-        }
-
-        /* Theme toggle button special styling */
-        button[key="theme_toggle"] {
-            background: rgba(30, 41, 59, 0.6) !important;
-            border: 1px solid rgba(100, 116, 139, 0.4) !important;
-            font-size: 1.5rem !important;
-            padding: 0.5rem !important;
-            width: 50px !important;
-            height: 50px !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-
-        button[key="theme_toggle"]:hover {
-            border-color: rgba(96, 165, 250, 0.6) !important;
-            background: rgba(30, 41, 59, 0.8) !important;
-            transform: scale(1.1) !important;
-        }
-
-        /* Sliders */
-        .stSlider [data-baseweb="slider-track"] {
-            background: rgba(100, 116, 139, 0.3) !important;
-        }
-
-        .stSlider [data-baseweb="slider-track-fill"] {
-            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%) !important;
-        }
-
-        .stSlider [data-baseweb="slider-thumb"] {
-            background: #60a5fa !important;
-            box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4) !important;
-        }
-
-        /* Text colors - Force override */
-        p, span, div, label {
-            color: #e2e8f0 !important;
-        }
-
-        /* Override markdown text */
-        .stMarkdown, .stMarkdown p, .stMarkdown span, .stMarkdown div {
-            color: #e2e8f0 !important;
-        }
-
-        /* Input labels and values */
-        .stSelectbox label, .stSlider label, .stNumberInput label {
-            color: #e2e8f0 !important;
-            font-weight: 600 !important;
-        }
-
-        /* Selectbox dropdown text */
-        .stSelectbox div[data-baseweb="select"] > div {
-            color: #e2e8f0 !important;
-            background: rgba(30, 41, 59, 0.95) !important;
-        }
-
-        .stSelectbox div[data-baseweb="select"] * {
-            color: #e2e8f0 !important;
-        }
-
-        /* Selectbox options popup */
-        [data-baseweb="popover"] {
-            background: rgba(30, 41, 59, 0.95) !important;
-            color: #e2e8f0 !important;
-        }
-
-        [data-baseweb="popover"] * {
-            color: #e2e8f0 !important;
-        }
-
-        [role="option"] {
-            color: #e2e8f0 !important;
-            background: rgba(30, 41, 59, 0.95) !important;
-        }
-
-        [role="option"]:hover {
-            background: rgba(59, 130, 246, 0.3) !important;
-            color: white !important;
-        }
-
-        [role="listbox"] {
-            background: rgba(30, 41, 59, 0.95) !important;
-        }
-
-        [role="listbox"] * {
-            color: #e2e8f0 !important;
-        }
-
-        /* Slider value display */
-        .stSlider [data-testid="stThumbValue"] {
-            color: #e2e8f0 !important;
-            background: rgba(30, 41, 59, 0.95) !important;
-            border: 1px solid rgba(100, 116, 139, 0.4) !important;
-        }
-
-        /* Info boxes and alerts */
-        .stAlert {
-            background: rgba(30, 41, 59, 0.6) !important;
-            border: 1px solid rgba(100, 116, 139, 0.4) !important;
-            color: #e2e8f0 !important;
-        }
-
-        .stAlert p, .stAlert span, .stAlert div {
-            color: #e2e8f0 !important;
-        }
-
-        /* Expander */
-        .streamlit-expanderHeader {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 12px;
-            color: #e2e8f0 !important;
-            font-weight: 600;
-            border: 1px solid rgba(100, 116, 139, 0.4);
-        }
-
-        .streamlit-expanderContent {
-            background: rgba(30, 41, 59, 0.5) !important;
-            color: #e2e8f0 !important;
-        }
-
-        .streamlit-expanderContent p,
-        .streamlit-expanderContent span,
-        .streamlit-expanderContent div,
-        .streamlit-expanderContent li {
-            color: #e2e8f0 !important;
-        }
-
-        /* Tabs */
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 8px;
-            background: transparent;
-        }
-
-        .stTabs [data-baseweb="tab"] {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 8px;
-            color: #e2e8f0 !important;
-            padding: 12px 24px;
-            font-weight: 500;
-            border: 1px solid rgba(100, 116, 139, 0.3);
-        }
-
-        .stTabs [aria-selected="true"] {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            color: white !important;
-            border: none;
-        }
-
-        /* Tab content */
-        [data-baseweb="tab-panel"] {
-            color: #e2e8f0 !important;
-        }
-
-        [data-baseweb="tab-panel"] p,
-        [data-baseweb="tab-panel"] span,
-        [data-baseweb="tab-panel"] div {
-            color: #e2e8f0 !important;
-        }
-
-        /* Code blocks */
-        code {
-            background: rgba(30, 41, 59, 0.8) !important;
-            color: #e2e8f0 !important;
-            padding: 4px 8px !important;
-            border-radius: 6px !important;
-            font-family: 'Courier New', monospace !important;
-        }
-
-        pre {
-            background: rgba(30, 41, 59, 0.8) !important;
-            color: #e2e8f0 !important;
-            padding: 1rem !important;
-            border-radius: 8px !important;
-            border: 1px solid rgba(100, 116, 139, 0.4) !important;
-        }
-
-        pre code {
-            background: transparent !important;
-            color: #e2e8f0 !important;
-        }
-
-        /* JSON/Code in markdown */
-        .stMarkdown pre {
-            background: rgba(30, 41, 59, 0.8) !important;
-            color: #e2e8f0 !important;
-            padding: 1rem !important;
-        }
-
-        .stMarkdown pre code {
-            color: #e2e8f0 !important;
-        }
-
-        /* Divider */
-        hr {
-            border-color: rgba(100, 116, 139, 0.3);
-        }
-        </style>
-        """
-    else:
-        return """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        /* Global Styles - LIGHT THEME */
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #1e293b !important;
-        }
-
-        /* Force light background - override system dark mode */
-        .stApp {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
-            color: #1e293b !important;
-        }
-
-        .main {
-            padding: 1.5rem 2rem;
-            background: transparent !important;
-            color: #1e293b !important;
-        }
-
-        .main * {
-            color: #1e293b !important;
-        }
-
-        /* Override Streamlit's dark mode */
-        [data-testid="stAppViewContainer"] {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
-            color: #1e293b !important;
-        }
-
-        [data-testid="stAppViewContainer"] * {
-            color: #1e293b !important;
-        }
-
-        [data-testid="stHeader"] {
-            background: transparent !important;
-        }
-
-        /* Headers with gradient */
-        h1 {
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-            font-size: 2.5rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        h2 {
-            color: #1e293b !important;
-            font-weight: 600;
-            font-size: 1.75rem !important;
-            margin-top: 2rem !important;
-        }
-
-        h3 {
-            color: #334155 !important;
-            font-weight: 600;
-            font-size: 1.25rem !important;
-        }
-
-        /* Metric Cards - Uniform height and spacing */
-        [data-testid="stMetric"] {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 16px;
-            padding: 1.5rem !important;
-            min-height: 120px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        [data-testid="stMetric"]:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-
-        [data-testid="stMetric"] label {
-            color: #64748b !important;
-            font-size: 0.875rem !important;
-            font-weight: 600 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        [data-testid="stMetric"] [data-testid="stMetricValue"] {
-            color: #0f172a !important;
-            font-size: 2rem !important;
-            font-weight: 700 !important;
-        }
-
-        /* Sidebar - Fixed width and consistent styling */
-        section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-            border-right: 1px solid rgba(226, 232, 240, 0.8);
-            color: #1e293b !important;
-            min-width: 300px !important;
-            max-width: 350px !important;
-        }
-
-        section[data-testid="stSidebar"] * {
-            color: #1e293b !important;
-        }
-
-        section[data-testid="stSidebar"] .stMarkdown {
-            color: #1e293b !important;
-        }
-
-        section[data-testid="stSidebar"] .stMarkdown * {
-            color: #1e293b !important;
-        }
-
-        section[data-testid="stSidebar"] label {
-            color: #1e293b !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        section[data-testid="stSidebar"] input,
-        section[data-testid="stSidebar"] select,
-        section[data-testid="stSidebar"] textarea {
-            color: #1e293b !important;
-            border-radius: 8px !important;
-        }
-
-        /* Sidebar selectbox specific */
-        section[data-testid="stSidebar"] [data-baseweb="select"] {
-            color: #1e293b !important;
-            width: 100% !important;
-        }
-
-        section[data-testid="stSidebar"] [data-baseweb="select"] * {
-            color: #1e293b !important;
-        }
-
-        /* Sidebar sliders - equal width */
-        section[data-testid="stSidebar"] .stSlider {
-            width: 100% !important;
-        }
-        }
-
-        /* Buttons */
-        .stButton > button {
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
-            color: white !important;
-            border: none;
-            border-radius: 12px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            width: 100%;
-        }
-
-        .stButton > button * {
-            color: white !important;
-        }
-
-        .stButton > button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
-        }
-
-        /* Theme toggle button special styling */
-        button[key="theme_toggle"] {
-            background: rgba(255, 255, 255, 0.9) !important;
-            border: 1px solid rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-            font-size: 1.5rem !important;
-            padding: 0.5rem !important;
-            width: 50px !important;
-            height: 50px !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-
-        button[key="theme_toggle"]:hover {
-            border-color: rgba(37, 99, 235, 0.5) !important;
-            background: white !important;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
-            transform: scale(1.1) !important;
-        }
-
-        /* Sliders */
-        .stSlider [data-baseweb="slider-track"] {
-            background: rgba(203, 213, 225, 0.5) !important;
-        }
-
-        .stSlider [data-baseweb="slider-track-fill"] {
-            background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%) !important;
-        }
-
-        .stSlider [data-baseweb="slider-thumb"] {
-            background: #2563eb !important;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
-        }
-
-        /* Text colors - Force override */
-        p, span, div, label {
-            color: #1e293b !important;
-        }
-
-        /* Override markdown text */
-        .stMarkdown, .stMarkdown p, .stMarkdown span, .stMarkdown div {
-            color: #1e293b !important;
-        }
-
-        /* Input labels and values */
-        .stSelectbox label, .stSlider label, .stNumberInput label {
-            color: #1e293b !important;
-            font-weight: 600 !important;
-        }
-
-        /* Selectbox dropdown text */
-        .stSelectbox div[data-baseweb="select"] > div {
-            color: #1e293b !important;
-            background: white !important;
-        }
-
-        .stSelectbox div[data-baseweb="select"] * {
-            color: #1e293b !important;
-        }
-
-        /* Selectbox options popup */
-        [data-baseweb="popover"] {
-            background: white !important;
-            color: #1e293b !important;
-        }
-
-        [data-baseweb="popover"] * {
-            color: #1e293b !important;
-        }
-
-        [role="option"] {
-            color: #1e293b !important;
-            background: white !important;
-        }
-
-        [role="option"]:hover {
-            background: rgba(226, 232, 240, 0.5) !important;
-            color: #1e293b !important;
-        }
-
-        [role="listbox"] {
-            background: white !important;
-        }
-
-        [role="listbox"] * {
-            color: #1e293b !important;
-        }
-
-        /* Slider value display */
-        .stSlider [data-testid="stThumbValue"] {
-            color: #1e293b !important;
-            background: white !important;
-            border: 1px solid rgba(226, 232, 240, 0.8) !important;
-        }
-
-        /* Info boxes and alerts */
-        .stAlert {
-            background: rgba(255, 255, 255, 0.9) !important;
-            border: 1px solid rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-        }
-
-        .stAlert p, .stAlert span, .stAlert div {
-            color: #1e293b !important;
-        }
-
-        /* Expander */
-        .streamlit-expanderHeader {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            color: #1e293b !important;
-            font-weight: 600;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .streamlit-expanderContent {
-            background: rgba(255, 255, 255, 0.95) !important;
-            color: #1e293b !important;
-        }
-
-        .streamlit-expanderContent p,
-        .streamlit-expanderContent span,
-        .streamlit-expanderContent div,
-        .streamlit-expanderContent li {
-            color: #1e293b !important;
-        }
-
-        /* Tabs */
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 8px;
-            background: transparent;
-        }
-
-        .stTabs [data-baseweb="tab"] {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            color: #1e293b !important;
-            padding: 12px 24px;
-            font-weight: 500;
-            border: 1px solid rgba(226, 232, 240, 0.6);
-        }
-
-        .stTabs [aria-selected="true"] {
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            color: white !important;
-            border: none;
-        }
-
-        /* Tab content */
-        [data-baseweb="tab-panel"] {
-            color: #1e293b !important;
-        }
-
-        [data-baseweb="tab-panel"] p,
-        [data-baseweb="tab-panel"] span,
-        [data-baseweb="tab-panel"] div {
-            color: #1e293b !important;
-        }
-
-        /* Code blocks */
-        code {
-            background: rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-            padding: 4px 8px !important;
-            border-radius: 6px !important;
-            font-family: 'Courier New', monospace !important;
-        }
-
-        pre {
-            background: rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-            padding: 1rem !important;
-            border-radius: 8px !important;
-            border: 1px solid rgba(203, 213, 225, 0.8) !important;
-        }
-
-        pre code {
-            background: transparent !important;
-            color: #1e293b !important;
-        }
-
-        /* JSON/Code in markdown */
-        .stMarkdown pre {
-            background: rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-            padding: 1rem !important;
-        }
-
-        .stMarkdown pre code {
-            color: #1e293b !important;
-        }
-
-        .stMarkdown code {
-            background: rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-        }
-
-        /* st.code blocks */
-        .stCodeBlock {
-            background: rgba(226, 232, 240, 0.8) !important;
-        }
-
-        .stCodeBlock pre {
-            background: rgba(226, 232, 240, 0.8) !important;
-            color: #1e293b !important;
-        }
-
-        .stCodeBlock code {
-            color: #1e293b !important;
-        }
-
-        /* st.json widget - CRITICAL FIX */
-        .stJson {
-            background: white !important;
-            color: #1e293b !important;
-            border: 1px solid rgba(203, 213, 225, 0.8) !important;
-            border-radius: 8px !important;
-            padding: 1rem !important;
-        }
-
-        .stJson * {
-            color: #1e293b !important;
-        }
-
-        .stJson pre {
-            background: white !important;
-            color: #1e293b !important;
-        }
-
-        .stJson code {
-            background: white !important;
-            color: #1e293b !important;
-        }
-
-        /* Override any inline styles on JSON */
-        .stJson div {
-            color: #1e293b !important;
-        }
-
-        .stJson span {
-            color: #1e293b !important;
-        }
-
-        /* JSON viewer specific selectors */
-        [data-testid="stJson"] {
-            background: white !important;
-            color: #1e293b !important;
-        }
-
-        [data-testid="stJson"] * {
-            color: #1e293b !important;
-        }
-
-        /* React JSON view component */
-        .react-json-view {
-            background: white !important;
-        }
-
-        .react-json-view * {
-            color: #1e293b !important;
-        }
-
-        /* JSON syntax highlighting override */
-        .stJson .token.property,
-        .stJson .token.string {
-            color: #059669 !important;
-        }
-
-        .stJson .token.number {
-            color: #dc2626 !important;
-        }
-
-        .stJson .token.boolean {
-            color: #2563eb !important;
-        }
-
-        .stJson .token.punctuation {
-            color: #64748b !important;
-        }
-
-        /* Additional JSON element targeting */
-        .object-key {
-            color: #059669 !important;
-        }
-
-        .object-value {
-            color: #1e293b !important;
-        }
-
-        .string-value {
-            color: #059669 !important;
-        }
-
-        .number-value {
-            color: #dc2626 !important;
-        }
-
-        .boolean-value {
-            color: #2563eb !important;
-        }
-
-        /* Dataframes */
-        .stDataFrame {
-            background: white !important;
-            color: #1e293b !important;
-        }
-
-        .stDataFrame table {
-            color: #1e293b !important;
-        }
-
-        .stDataFrame th {
-            background: rgba(226, 232, 240, 0.5) !important;
-            color: #1e293b !important;
-        }
-
-        .stDataFrame td {
-            color: #1e293b !important;
-        }
-
-        /* Success/Info/Warning/Error boxes */
-        .stSuccess {
-            background: rgba(16, 185, 129, 0.1) !important;
-            color: #065f46 !important;
-        }
-
-        .stInfo {
-            background: rgba(59, 130, 246, 0.1) !important;
-            color: #1e40af !important;
-        }
-
-        .stWarning {
-            background: rgba(245, 158, 11, 0.1) !important;
-            color: #92400e !important;
-        }
-
-        .stError {
-            background: rgba(239, 68, 68, 0.1) !important;
-            color: #991b1b !important;
-        }
-
-        /* Divider */
-        hr {
-            border-color: rgba(226, 232, 240, 0.8);
-        }
-
-        /* Plotly Charts - Responsive */
-        .js-plotly-plot {
-            width: 100% !important;
-            height: auto !important;
-        }
-
-        .plotly {
-            width: 100% !important;
-            height: auto !important;
-        }
-
-        /* Container spacing */
-        .block-container {
-            padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
-            max-width: 100% !important;
-        }
-
-        /* Column gaps */
-        [data-testid="column"] {
-            padding: 0.5rem !important;
-        }
-
-        /* Responsive behavior */
-        @media (max-width: 768px) {
-            .stButton > button {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            h1 {
-                font-size: 2rem !important;
-            }
-
-            h2 {
-                font-size: 1.5rem !important;
-            }
-
-            [data-testid="stMetric"] {
-                min-height: 100px;
-                padding: 1rem !important;
-            }
-        }
-        </style>
-        """
+    """Return the single, modern dark theme CSS."""
+    return """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Global Styles - DARK THEME */
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #e2e8f0 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.stApp,
+[data-testid="stAppViewContainer"] {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  color: #e2e8f0 !important;
+}
+
+[data-testid="stHeader"] { background: transparent !important; }
+
+/* Constrain content width */
+.block-container {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+/* Headings */
+h1 {
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  font-size: 2.25rem !important;
+  margin-bottom: 0.5rem !important;
+}
+h2 { color: #f1f5f9 !important; font-weight: 600; font-size: 1.5rem !important; margin-top: 2rem !important; }
+h3 { color: #e2e8f0 !important; font-weight: 600; font-size: 1.1rem !important; }
+
+/* Metric cards */
+[data-testid="stMetric"] {
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  border-radius: 16px;
+  padding: 1.5rem !important;
+  min-height: 120px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0 !important;
+}
+[data-testid="stMetric"]:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4); border-color: rgba(96, 165, 250, 0.6); }
+[data-testid="stMetric"] label { color: #94a3b8 !important; font-size: 0.875rem !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; }
+[data-testid="stMetric"] [data-testid="stMetricValue"] { color: #f1f5f9 !important; font-size: 2rem !important; font-weight: 700 !important; }
+/* Prevent truncated metric text (macOS rendering width variance) */
+[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    display: inline-block !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: keep-all !important;
+    line-height: 1.2 !important;
+}
+[data-testid="stMetric"] [data-testid="stMetricLabel"] {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  border-right: 1px solid rgba(100, 116, 139, 0.4);
+  color: #e2e8f0 !important;
+  width: clamp(280px, 22vw, 340px) !important;
+}
+section[data-testid="stSidebar"] * { color: #e2e8f0 !important; }
+section[data-testid="stSidebar"] label { color: #e2e8f0 !important; font-weight: 600 !important; font-size: 0.9rem !important; margin-bottom: 0.5rem !important; }
+section[data-testid="stSidebar"] [data-baseweb="select"] { width: 100% !important; }
+
+/* Buttons */
+.stButton > button {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+  color: white !important;
+  border: none; border-radius: 12px; padding: 0.75rem 2rem; font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  width: 100%;
+}
+.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6); }
+
+/* Sliders */
+.stSlider [data-baseweb="slider-track"] { background: rgba(100, 116, 139, 0.3) !important; }
+.stSlider [data-baseweb="slider-track-fill"] { background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%) !important; }
+.stSlider [data-baseweb="slider-thumb"] { background: #60a5fa !important; box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4) !important; }
+
+/* Selects and popovers */
+.stSelectbox div[data-baseweb="select"] > div { color: #e2e8f0 !important; background: rgba(30, 41, 59, 0.95) !important; }
+[data-baseweb="popover"], [role="listbox"], [role="option"] { background: rgba(30, 41, 59, 0.95) !important; color: #e2e8f0 !important; }
+[role="option"]:hover { background: rgba(59, 130, 246, 0.3) !important; color: white !important; }
+.stSlider [data-testid="stThumbValue"] { color: #e2e8f0 !important; background: rgba(30, 41, 59, 0.95) !important; border: 1px solid rgba(100, 116, 139, 0.4) !important; }
+
+/* Expander */
+.streamlit-expanderHeader { background: rgba(30, 41, 59, 0.6); border-radius: 12px; color: #e2e8f0 !important; font-weight: 600; border: 1px solid rgba(100, 116, 139, 0.4); }
+.streamlit-expanderContent { background: rgba(30, 41, 59, 0.5) !important; color: #e2e8f0 !important; }
+
+/* Tabs */
+.stTabs [data-baseweb="tab-list"] { gap: 8px; background: transparent; }
+.stTabs [data-baseweb="tab"] { background: rgba(30, 41, 59, 0.5); border-radius: 8px; color: #e2e8f0 !important; padding: 12px 24px; font-weight: 500; border: 1px solid rgba(100, 116, 139, 0.3); }
+.stTabs [aria-selected="true"] { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white !important; border: none; }
+[data-baseweb="tab-panel"], [data-baseweb="tab-panel"] * { color: #e2e8f0 !important; }
+
+/* Code blocks */
+code { background: rgba(30, 41, 59, 0.8) !important; color: #e2e8f0 !important; padding: 4px 8px !important; border-radius: 6px !important; font-family: 'Courier New', monospace !important; }
+pre { background: rgba(30, 41, 59, 0.8) !important; color: #e2e8f0 !important; padding: 1rem !important; border-radius: 8px !important; border: 1px solid rgba(100, 116, 139, 0.4) !important; }
+pre code { background: transparent !important; color: #e2e8f0 !important; }
+.stMarkdown pre, .stMarkdown code { background: rgba(30, 41, 59, 0.8) !important; color: #e2e8f0 !important; }
+
+/* Divider */
+hr { border-color: rgba(100, 116, 139, 0.3); }
+
+/* Columns */
+[data-testid="column"] { min-width: 0 !important; padding: 0.5rem !important; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  h1 { font-size: 2rem !important; }
+  h2 { font-size: 1.35rem !important; }
+  .stTabs [data-baseweb="tab"] { padding: 10px 14px; font-size: 0.95rem; }
+}
+@media (max-width: 992px) {
+  .block-container { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  [data-testid="stMetric"] { min-height: 100px; padding: 1rem !important; }
+    [data-testid="stMetric"] [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
+}
+@media (max-width: 992px) {
+    /* Stack columns on small screens for cleaner layout */
+    [data-testid="column"] { flex: 1 1 100% !important; }
+}
+@media (max-width: 768px) {
+  .stButton > button { padding: 0.5rem 1rem; font-size: 0.9rem; }
+}
+</style>
+"""
 
 # Apply theme CSS
 st.markdown(get_theme_css(), unsafe_allow_html=True)
@@ -1141,9 +352,6 @@ def create_gauge_chart(probability):
     """
     Create a responsive gauge chart for failure probability.
     """
-    # Get theme from session state
-    is_light = st.session_state.get('theme', 'dark') == 'light'
-
     fig = go.Figure(go.Indicator(
         mode="gauge+number+delta",
         value=probability * 100,
@@ -1151,16 +359,16 @@ def create_gauge_chart(probability):
             'text': "Failure Probability",
             'font': {
                 'size': 18,
-                'color': '#1e293b' if is_light else '#e2e8f0',
+                'color': '#e2e8f0',
                 'family': 'Inter, sans-serif'
             }
         },
         delta={'reference': 50},
-        number={'font': {'size': 36, 'color': '#1e293b' if is_light else '#e2e8f0'}},
+        number={'font': {'size': 36, 'color': '#e2e8f0'}},
         gauge={
             'axis': {
                 'range': [None, 100],
-                'tickfont': {'size': 12, 'color': '#1e293b' if is_light else '#e2e8f0'}
+                'tickfont': {'size': 12, 'color': '#e2e8f0'}
             },
             'bar': {'color': "#3b82f6"},
             'steps': [
@@ -1179,15 +387,15 @@ def create_gauge_chart(probability):
     fig.update_layout(
         height=350,
         margin=dict(t=50, b=20, l=20, r=20),
-        paper_bgcolor='white' if is_light else 'rgba(30, 41, 59, 0.5)',
-        plot_bgcolor='white' if is_light else 'rgba(30, 41, 59, 0.5)',
+        paper_bgcolor='rgba(30, 41, 59, 0.5)',
+        plot_bgcolor='rgba(30, 41, 59, 0.5)',
         font={
-            'color': '#1e293b' if is_light else '#e2e8f0',
+            'color': '#e2e8f0',
             'size': 12
         },
         title={
             'font': {
-                'color': '#1e293b' if is_light else '#e2e8f0'
+                'color': '#e2e8f0'
             }
         }
     )
@@ -1200,9 +408,6 @@ def create_feature_importance_plot(model, feature_names):
     """
     if hasattr(model, 'feature_importances_'):
         importances = model.feature_importances_
-
-        # Get theme from session state
-        is_light = st.session_state.get('theme', 'dark') == 'light'
 
         # Create DataFrame
         df_importance = pd.DataFrame({
@@ -1219,39 +424,39 @@ def create_feature_importance_plot(model, feature_names):
 
         fig.update_layout(
             height=400,
-            paper_bgcolor='white' if is_light else 'rgba(30, 41, 59, 0.5)',
-            plot_bgcolor='white' if is_light else 'rgba(30, 41, 59, 0.5)',
+            paper_bgcolor='rgba(30, 41, 59, 0.5)',
+            plot_bgcolor='rgba(30, 41, 59, 0.5)',
             font={
-                'color': '#1e293b' if is_light else '#e2e8f0',
+                'color': '#e2e8f0',
                 'size': 12
             },
             title={
                 'font': {
-                    'color': '#1e293b' if is_light else '#e2e8f0',
+                    'color': '#e2e8f0',
                     'size': 16
                 }
             },
             xaxis={
-                'gridcolor': 'rgba(203, 213, 225, 0.3)' if is_light else 'rgba(100, 116, 139, 0.3)',
-                'color': '#1e293b' if is_light else '#e2e8f0',
+                'gridcolor': 'rgba(100, 116, 139, 0.3)',
+                'color': '#e2e8f0',
                 'title': {
-                    'font': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                    'font': {'color': '#e2e8f0'}
                 },
-                'tickfont': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                'tickfont': {'color': '#e2e8f0'}
             },
             yaxis={
-                'gridcolor': 'rgba(203, 213, 225, 0.3)' if is_light else 'rgba(100, 116, 139, 0.3)',
-                'color': '#1e293b' if is_light else '#e2e8f0',
+                'gridcolor': 'rgba(100, 116, 139, 0.3)',
+                'color': '#e2e8f0',
                 'title': {
-                    'font': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                    'font': {'color': '#e2e8f0'}
                 },
-                'tickfont': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                'tickfont': {'color': '#e2e8f0'}
             },
             coloraxis={
                 'colorbar': {
-                    'tickfont': {'color': '#1e293b' if is_light else '#e2e8f0'},
+                    'tickfont': {'color': '#e2e8f0'},
                     'title': {
-                        'font': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                        'font': {'color': '#e2e8f0'}
                     }
                 }
             }
@@ -1299,16 +504,8 @@ def main():
     # ========== HEADER SECTION ==========
     header_container = st.container()
     with header_container:
-        col1, col2 = st.columns([10, 1])
-        with col1:
-            st.title("🔧 Predictive Maintenance Dashboard")
-            st.markdown("**AI-Powered Machine Failure Prediction System**")
-        with col2:
-            st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-            theme_icon = "☀️" if st.session_state.theme == 'dark' else "🌙"
-            if st.button(theme_icon, key="theme_toggle", help="Toggle theme"):
-                toggle_theme()
-                st.rerun()
+        st.title("🔧 Predictive Maintenance Dashboard")
+        st.markdown("**AI-Powered Machine Failure Prediction System**")
 
     st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
 
@@ -1471,7 +668,7 @@ def main():
             with col1:
                 st.metric(
                     label="Prediction",
-                    value="⚠️ Failure" if prediction == 1 else "✅ No Failure",
+                    value="⚠️ Failure" if prediction == 1 else "✅ No\u00A0Failure",
                     help="Predicted outcome"
                 )
 
@@ -1590,9 +787,6 @@ def main():
             if metrics_dict and model_data['model_name'] in metrics_dict:
                 metrics = metrics_dict[model_data['model_name']]['metrics']
 
-                # Get theme from session state
-                is_light = st.session_state.get('theme', 'dark') == 'light'
-
                 # Create metrics DataFrame
                 df_metrics = pd.DataFrame({
                     'Metric': ['Accuracy', 'Precision', 'Recall', 'F1-Score', 'ROC-AUC'],
@@ -1619,39 +813,39 @@ def main():
                 fig_metrics.update_layout(
                     height=400,
                     showlegend=False,
-                    paper_bgcolor='white' if is_light else 'rgba(30, 41, 59, 0.5)',
-                    plot_bgcolor='white' if is_light else 'rgba(30, 41, 59, 0.5)',
+                    paper_bgcolor='rgba(30, 41, 59, 0.5)',
+                    plot_bgcolor='rgba(30, 41, 59, 0.5)',
                     font={
-                        'color': '#1e293b' if is_light else '#e2e8f0',
+                        'color': '#e2e8f0',
                         'size': 12
                     },
                     title={
                         'font': {
-                            'color': '#1e293b' if is_light else '#e2e8f0',
+                            'color': '#e2e8f0',
                             'size': 16
                         }
                     },
                     xaxis={
-                        'gridcolor': 'rgba(203, 213, 225, 0.3)' if is_light else 'rgba(100, 116, 139, 0.3)',
-                        'color': '#1e293b' if is_light else '#e2e8f0',
+                        'gridcolor': 'rgba(100, 116, 139, 0.3)',
+                        'color': '#e2e8f0',
                         'title': {
-                            'font': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                            'font': {'color': '#e2e8f0'}
                         },
-                        'tickfont': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                        'tickfont': {'color': '#e2e8f0'}
                     },
                     yaxis={
-                        'gridcolor': 'rgba(203, 213, 225, 0.3)' if is_light else 'rgba(100, 116, 139, 0.3)',
-                    'color': '#1e293b' if is_light else '#e2e8f0',
+                        'gridcolor': 'rgba(100, 116, 139, 0.3)',
+                        'color': '#e2e8f0',
                     'title': {
-                        'font': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                        'font': {'color': '#e2e8f0'}
                     },
-                    'tickfont': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                    'tickfont': {'color': '#e2e8f0'}
                 },
                 coloraxis={
                     'colorbar': {
-                        'tickfont': {'color': '#1e293b' if is_light else '#e2e8f0'},
+                        'tickfont': {'color': '#e2e8f0'},
                         'title': {
-                            'font': {'color': '#1e293b' if is_light else '#e2e8f0'}
+                            'font': {'color': '#e2e8f0'}
                         }
                     }
                 }
@@ -1674,7 +868,6 @@ def main():
         - 📊 Real-time risk assessment
         - 🔍 Model interpretability with feature importance
         - 📈 Comprehensive performance metrics
-        - 🎨 Light/Dark theme toggle
 
         **🤖 Model:** Trained on the AI4I 2020 Predictive Maintenance Dataset with 97.8% accuracy.
         """)
