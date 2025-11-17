@@ -134,8 +134,10 @@ print(requests.post(url, json=data).json())
 
 ## 🧾 Dataset
 
-**Source:** [AI4I 2020 Predictive Maintenance Dataset](https://archive.ics.uci.edu/ml/datasets/AI4I+2020+Predictive+Maintenance+Dataset)
-**Samples:** 10 000  **Target:** Failure / No Failure  **Type:** Binary classification
+- **Source:** [AI4I 2020 Predictive Maintenance Dataset](https://archive.ics.uci.edu/ml/datasets/AI4I+2020+Predictive+Maintenance+Dataset)
+- **Samples:** 10,000
+- **Target:** Failure / No Failure
+- **Type:** Binary classification
 
 
 ## 📁 Project Structure
